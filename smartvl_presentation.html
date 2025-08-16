@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartVL - 智能文档处理解决方案</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', 'Microsoft YaHei', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 科技背景动画 */
+        .tech-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(0, 255, 0, 0.1) 0%, transparent 50%);
+        }
+
+        .tech-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* 粒子效果 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.5; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* PPT幻灯片样式 */
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 40px;
+            margin-bottom: 0;
+            position: relative;
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(0, 255, 255, 0.05) 0%, 
+                transparent 25%, 
+                transparent 75%, 
+                rgba(255, 0, 255, 0.05) 100%);
+            pointer-events: none;
+        }
+
+        /* 标题样式 */
+        .slide-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 4rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff00, #ffff00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 400% 400%;
+            animation: gradientShift 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            letter-spacing: 3px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .slide-subtitle {
+            font-size: 1.8rem;
+            color: #00ffff;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* 英雄幻灯片 */
+        .hero-slide {
+            background: radial-gradient(circle at center, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .hero-title {
+            font-size: 6rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .hero-tagline {
+            font-size: 2.2rem;
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .hero-description {
+            font-size: 1.4rem;
+            color: #cccccc;
+            max-width: 800px;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        /* 数据展示 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff00, #ffff00);
+            z-index: -1;
+            border-radius: 10px;
+            animation: borderGlow 2s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.3);
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #00ffff;
+            display: block;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #ffffff;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 特性网格 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .feature-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ffff;
+            box-shadow: 0 15px 30px rgba(0, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        }
+
+        .feature-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .feature-description {
+            color: #cccccc;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        /* 对比表格 */
+        .comparison-table {
+            width: 100%;
+            max-width: 1000px;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(45deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            font-family: 'Orbitron', monospace;
+            border-bottom: 2px solid #00ffff;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            color: #cccccc;
+            font-size: 1.1rem;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .highlight-cell {
+            color: #00ffff !important;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* 滚动指示器 */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .scroll-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #ff00ff, #00ff00);
+            width: 0%;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        /* 导航点 */
+        .nav-dots {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(0, 255, 255, 0.3);
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .nav-dot.active {
+            background: #00ffff;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+            border-color: #ffffff;
+        }
+
+        /* CTA按钮 */
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            color: #000000;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 255, 255, 0.4);
+            border-color: #ffffff;
+        }
+
+        /* OCR展示样式 */
+         .demo-grid {
+             display: flex;
+             flex-direction: column;
+             gap: 40px;
+             width: 100%;
+             max-width: 1400px;
+         }
+
+         .demo-category {
+             background: rgba(0, 0, 0, 0.6);
+             border: 1px solid rgba(0, 255, 255, 0.3);
+             border-radius: 15px;
+             padding: 30px;
+             position: relative;
+             overflow: hidden;
+         }
+
+         .demo-category::before {
+             content: '';
+             position: absolute;
+             top: 0;
+             left: -100%;
+             width: 100%;
+             height: 100%;
+             background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.05), transparent);
+             transition: left 0.8s ease;
+         }
+
+         .demo-category:hover::before {
+             left: 100%;
+         }
+
+         .demo-category-title {
+             font-family: 'Orbitron', monospace;
+             font-size: 1.8rem;
+             color: #00ffff;
+             margin-bottom: 25px;
+             text-align: center;
+             text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+         }
+
+         .demo-images {
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+             gap: 20px;
+         }
+
+         .demo-image-card {
+             background: rgba(0, 0, 0, 0.8);
+             border: 2px solid rgba(0, 255, 255, 0.2);
+             border-radius: 10px;
+             padding: 15px;
+             text-align: center;
+             transition: all 0.3s ease;
+             position: relative;
+             overflow: hidden;
+         }
+
+         .demo-image-card::before {
+             content: '';
+             position: absolute;
+             top: -2px;
+             left: -2px;
+             right: -2px;
+             bottom: -2px;
+             background: linear-gradient(45deg, #00ffff, #ff00ff, #00ff00, #ffff00);
+             z-index: -1;
+             border-radius: 10px;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+         }
+
+         .demo-image-card:hover::before {
+             opacity: 0.3;
+         }
+
+         .demo-image-card:hover {
+             transform: translateY(-5px) scale(1.02);
+             border-color: #00ffff;
+             box-shadow: 0 15px 30px rgba(0, 255, 255, 0.3);
+         }
+
+         .demo-image {
+             width: 100%;
+             height: 200px;
+             object-fit: contain;
+             border-radius: 8px;
+             margin-bottom: 15px;
+             background: rgba(255, 255, 255, 0.05);
+             padding: 10px;
+             cursor: pointer;
+             transition: transform 0.3s ease;
+         }
+
+         .demo-image:hover {
+             transform: scale(1.05);
+         }
+
+         /* 模态框样式 */
+         .image-modal {
+             display: none;
+             position: fixed;
+             z-index: 9999;
+             left: 0;
+             top: 0;
+             width: 100%;
+             height: 100%;
+             background-color: rgba(0, 0, 0, 0.9);
+             backdrop-filter: blur(5px);
+         }
+
+         .modal-content {
+             position: absolute;
+             top: 50%;
+             left: 50%;
+             transform: translate(-50%, -50%);
+             max-width: 90%;
+             max-height: 90%;
+             border: 2px solid #00ffff;
+             border-radius: 10px;
+             box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+         }
+
+         .modal-image {
+             width: 100%;
+             height: 100%;
+             object-fit: contain;
+             border-radius: 8px;
+         }
+
+         .close-modal {
+             position: absolute;
+             top: 15px;
+             right: 25px;
+             color: #00ffff;
+             font-size: 35px;
+             font-weight: bold;
+             cursor: pointer;
+             text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+             transition: all 0.3s ease;
+         }
+
+         .close-modal:hover {
+             color: #ffffff;
+             text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+             transform: scale(1.2);
+         }
+
+         .demo-label {
+             font-size: 1.1rem;
+             color: #ffffff;
+             font-weight: 500;
+             letter-spacing: 1px;
+         }
+
+         /* 响应式设计 */
+         @media (max-width: 768px) {
+             .hero-title {
+                 font-size: 3.5rem;
+             }
+             
+             .slide-title {
+                 font-size: 2.5rem;
+             }
+             
+             .slide {
+                 padding: 40px 20px;
+             }
+             
+             .features-grid {
+                 grid-template-columns: 1fr;
+             }
+             
+             .stats-grid {
+                 grid-template-columns: repeat(2, 1fr);
+             }
+
+             .demo-images {
+                 grid-template-columns: 1fr;
+             }
+
+             .demo-image {
+                 height: 150px;
+             }
+         }
+
+        /* 动画效果 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            animation: slideInLeft 1s ease forwards;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(100px);
+            animation: slideInRight 1s ease forwards;
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 科技背景 -->
+    <div class="tech-bg"></div>
+    <div class="tech-grid"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- 滚动进度条 -->
+    <div class="scroll-indicator">
+        <div class="scroll-progress" id="scrollProgress"></div>
+    </div>
+
+    <!-- 导航点 -->
+    <div class="nav-dots" id="navDots"></div>
+
+    <div class="container">
+        <!-- 幻灯片1: 英雄页面 -->
+        <div class="slide hero-slide fade-in">
+            <h1 class="slide-title hero-title">SmartVL</h1>
+            <p class="hero-tagline">NEXT-GEN DOCUMENT AI</p>
+            <p class="hero-description">
+                基于统一视觉-语言模型的智能文档处理解决方案<br>
+                实现卓越性能、极致效率与显著成本优势
+            </p>
+        </div>
+
+        <!-- 幻灯片2: 核心数据 -->
+        <div class="slide fade-in">
+            <h2 class="slide-title">PERFORMANCE METRICS</h2>
+            <p class="slide-subtitle">核心性能指标</p>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">10X</span>
+                    <div class="stat-label">处理速度提升</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">&lt;2S</span>
+                    <div class="stat-label">API响应时间</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">100+</span>
+                    <div class="stat-label">支持语言</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">95%+</span>
+                    <div class="stat-label">识别准确率</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">99.9%</span>
+                    <div class="stat-label">系统可用性</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">90%</span>
+                    <div class="stat-label">成本节约</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻灯片3: 核心特性 -->
+        <div class="slide fade-in">
+            <h2 class="slide-title">CORE FEATURES</h2>
+            <p class="slide-subtitle">核心技术优势</p>
+            <div class="features-grid">
+                <div class="feature-card slide-in-left">
+                    <span class="feature-icon">🚀</span>
+                    <h3 class="feature-title">SUPERIOR PERFORMANCE</h3>
+                    <p class="feature-description">
+                        基于轻量级1.7B参数模型，文档处理速度比传统OCR快10倍，
+                        在OmniDocBench基准测试中实现SOTA性能。
+                    </p>
+                </div>
+                <div class="feature-card slide-in-right">
+                    <span class="feature-icon">🏗️</span>
+                    <h3 class="feature-title">UNIFIED ARCHITECTURE</h3>
+                    <p class="feature-description">
+                        统一VLM架构将布局检测与内容识别融为一体，
+                        从根本上简化部署与维护，降低系统复杂性。
+                    </p>
+                </div>
+                <div class="feature-card slide-in-left">
+                    <span class="feature-icon">💰</span>
+                    <h3 class="feature-title">COST EFFICIENCY</h3>
+                    <p class="feature-description">
+                        高效架构和紧凑模型尺寸显著降低计算资源需求，
+                        一台普通笔记本即可完成原本需要高端服务器的工作负载。
+                    </p>
+                </div>
+                <div class="feature-card slide-in-right">
+                    <span class="feature-icon">🌍</span>
+                    <h3 class="feature-title">GLOBAL SUPPORT</h3>
+                    <p class="feature-description">
+                        支持超过100种语言，对低资源语言展现强大解析能力，
+                        成为全球化运营的理想解决方案。
+                    </p>
+                </div>
+                <div class="feature-card slide-in-left">
+                    <span class="feature-icon">🔒</span>
+                    <h3 class="feature-title">ENTERPRISE SECURITY</h3>
+                    <p class="feature-description">
+                        支持本地化部署和私有云环境，确保数据隐私和合规性，
+                        提供企业级安全保障和完全的数据控制权。
+                    </p>
+                </div>
+                <div class="feature-card slide-in-right">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">REAL-TIME PROCESSING</h3>
+                    <p class="feature-description">
+                        毫秒级响应时间，支持实时文档处理和批量作业，
+                        满足高并发场景下的性能需求。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻灯片4: 技术创新 -->
+        <div class="slide fade-in">
+            <h2 class="slide-title">TECH INNOVATION</h2>
+            <p class="slide-subtitle">技术创新亮点</p>
+            <div style="max-width: 1000px; text-align: left;">
+                <div style="background: rgba(0, 255, 255, 0.1); padding: 40px; border-radius: 15px; border-left: 5px solid #00ffff; margin: 30px 0;">
+                    <h3 style="color: #00ffff; margin-bottom: 20px; font-family: 'Orbitron', monospace; font-size: 1.8rem;">统一VLM架构的革命性优势</h3>
+                    <p style="margin-bottom: 20px; font-size: 1.2rem; line-height: 1.8;">
+                        SmartVL采用统一的视觉-语言模型架构，能够同时处理文档的视觉布局和文本内容，
+                        这与传统的多模型流水线方法形成鲜明对比。
+                    </p>
+                    <p style="margin-bottom: 20px; font-size: 1.2rem; line-height: 1.8;">
+                        <span style="color: #00ffff; font-weight: 600;">性能对比示例：</span>
+                        一台DeepSeek推理服务器可以同时运行300个智能体，
+                        而一台普通笔记本电脑即可完成原本需要数十万元服务器才能处理的工作负载。
+                    </p>
+                    <p style="font-size: 1.2rem; line-height: 1.8;">
+                        这种内在的上下文感知能力是SmartVL在阅读顺序和复杂表格/公式提取方面
+                        取得SOTA性能的关键所在。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻灯片5: 竞争对比 -->
+        <div class="slide fade-in">
+            <h2 class="slide-title">COMPETITIVE ANALYSIS</h2>
+            <p class="slide-subtitle">竞争优势对比</p>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>衡量标准</th>
+                        <th>SmartVL</th>
+                        <th>传统OCR解决方案</th>
+                        <th>大型商业VLM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>架构</strong></td>
+                        <td class="highlight-cell">统一VLM</td>
+                        <td>多模型流水线</td>
+                        <td>黑盒统一VLM</td>
+                    </tr>
+                    <tr>
+                        <td><strong>模型尺寸</strong></td>
+                        <td class="highlight-cell">紧凑的1.7B LLM</td>
+                        <td>多个小型模型</td>
+                        <td>通常远大于1.7B</td>
+                    </tr>
+                    <tr>
+                        <td><strong>性能</strong></td>
+                        <td class="highlight-cell">SOTA，95%+准确率</td>
+                        <td>较低，性能碎片化</td>
+                        <td>性能卓越，但资源消耗大</td>
+                    </tr>
+                    <tr>
+                        <td><strong>速度</strong></td>
+                        <td class="highlight-cell">API响应时间&lt;2秒，快10倍</td>
+                        <td>较慢，多阶段处理</td>
+                        <td>较快，但需要强算力支持</td>
+                    </tr>
+                    <tr>
+                        <td><strong>部署灵活性</strong></td>
+                        <td class="highlight-cell">全面支持本地化部署</td>
+                        <td>供应商锁定</td>
+                        <td>供应商锁定</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 幻灯片6: 应用场景 -->
+        <div class="slide fade-in">
+            <h2 class="slide-title">APPLICATIONS</h2>
+            <p class="slide-subtitle">商业应用场景</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title">FINANCIAL SERVICES</h3>
+                    <p class="feature-description">
+                        准确解析年度报告中的复杂表格，支持量化分析和风险评估，
+                        自动化发票处理和合同分析。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔬</span>
+                    <h3 class="feature-title">LIFE SCIENCES</h3>
+                    <p class="feature-description">
+                        从技术期刊中提取化学分子式和实验数据，
+                        支持研发数据的自动化整理和分析。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🏢</span>
+                    <h3 class="feature-title">ENTERPRISE</h3>
+                    <p class="feature-description">
+                        自动化表单填充、文档即时搜索、
+                        入职文件归档等日常办公文档处理任务。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📱</span>
+                    <h3 class="feature-title">MOBILE APPS</h3>
+                    <p class="feature-description">
+                        支持实时用户交互，即时拍照上传发票或身份证件，
+                        迅速完成验证，提升客户体验。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎓</span>
+                    <h3 class="feature-title">EDUCATION</h3>
+                    <p class="feature-description">
+                        智能识别教材中的公式、图表和多语言内容，
+                        支持在线教育平台的内容数字化和知识提取。
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚖️</span>
+                    <h3 class="feature-title">LEGAL & COMPLIANCE</h3>
+                    <p class="feature-description">
+                        自动化法律文档审查、合同条款提取，
+                        支持多语言法规文件的智能分析和合规检查。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 幻灯片7: OCR能力展示 -->
+         <div class="slide fade-in">
+             <h2 class="slide-title">OCR CAPABILITIES</h2>
+             <p class="slide-subtitle">强大的文档识别能力展示</p>
+             <div class="demo-grid">
+                 <div class="demo-category">
+                     <h3 class="demo-category-title">📊 表格识别</h3>
+                     <div class="demo-images">
+                         <div class="demo-image-card">
+                             <img src="images/table1.png" alt="表格识别示例1" class="demo-image">
+                             <div class="demo-label">复杂表格结构识别</div>
+                         </div>
+                         <div class="demo-image-card">
+                             <img src="images/table2.png" alt="表格识别示例2" class="demo-image">
+                             <div class="demo-label">多层表头处理</div>
+                         </div>
+                         <div class="demo-image-card">
+                             <img src="images/table3.png" alt="表格识别示例3" class="demo-image">
+                             <div class="demo-label">表格数据提取</div>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <div class="demo-category">
+                     <h3 class="demo-category-title">🔢 公式识别</h3>
+                     <div class="demo-images">
+                         <div class="demo-image-card">
+                             <img src="images/formula1.png" alt="公式识别示例1" class="demo-image">
+                             <div class="demo-label">数学公式解析</div>
+                         </div>
+                         <div class="demo-image-card">
+                             <img src="images/formula2.png" alt="公式识别示例2" class="demo-image">
+                             <div class="demo-label">复杂方程识别</div>
+                         </div>
+                         <div class="demo-image-card">
+                             <img src="images/formula3.png" alt="公式识别示例3" class="demo-image">
+                             <div class="demo-label">科学计算公式</div>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <div class="demo-category">
+                     <h3 class="demo-category-title">🌍 多语言支持</h3>
+                     <div class="demo-images">
+                         <div class="demo-image-card">
+                             <img src="images/tradition_zh.png" alt="中文识别" class="demo-image">
+                             <div class="demo-label">繁体中文识别</div>
+                         </div>
+                         <div class="demo-image-card">
+                             <img src="images/Tibetan.png" alt="藏文识别" class="demo-image">
+                             <div class="demo-label">藏文文档处理</div>
+                         </div>
+                         <div class="demo-image-card">
+                             <img src="images/nl.png" alt="荷兰语识别" class="demo-image">
+                             <div class="demo-label">荷兰语文本</div>
+                         </div>
+                     </div>
+                 </div>
+                 
+                 <div class="demo-category">
+                     <h3 class="demo-category-title">🎯 智能定位</h3>
+                     <div class="demo-images">
+                         <div class="demo-image-card">
+                             <img src="images/grounding.png" alt="智能定位" class="demo-image">
+                             <div class="demo-label">精确元素定位</div>
+                         </div>
+                         <div class="demo-image-card">
+                             <img src="images/reading_order.png" alt="阅读顺序" class="demo-image">
+                             <div class="demo-label">阅读顺序识别</div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+         <!-- 幻灯片8: 行动号召 -->
+         <div class="slide fade-in">
+             <h2 class="slide-title">GET STARTED</h2>
+             <p class="slide-subtitle">开启智能文档处理的未来</p>
+             <div style="text-align: center; max-width: 800px;">
+                 <p style="font-size: 1.4rem; margin-bottom: 40px; color: #cccccc; line-height: 1.8;">
+                     SmartVL 为企业在快速发展的文档AI领域保持领先提供了强大的技术武器
+                 </p>
+                 <a href="#contact" class="cta-button">立即体验 SmartVL</a>
+             </div>
+         </div>
+    </div>
+
+    <!-- 图片模态框 -->
+    <div id="imageModal" class="image-modal">
+        <span class="close-modal">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" class="modal-image" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        // 创建粒子效果
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 滚动进度指示器
+        function updateScrollProgress() {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollProgress = (scrollTop / scrollHeight) * 100;
+            document.getElementById('scrollProgress').style.width = scrollProgress + '%';
+        }
+
+        // 创建导航点
+        function createNavDots() {
+            const slides = document.querySelectorAll('.slide');
+            const navDots = document.getElementById('navDots');
+            
+            slides.forEach((slide, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'nav-dot';
+                dot.addEventListener('click', () => {
+                    slide.scrollIntoView({ behavior: 'smooth' });
+                });
+                navDots.appendChild(dot);
+            });
+        }
+
+        // 更新活跃导航点
+        function updateActiveNavDot() {
+            const slides = document.querySelectorAll('.slide');
+            const navDots = document.querySelectorAll('.nav-dot');
+            const scrollTop = window.pageYOffset;
+            
+            slides.forEach((slide, index) => {
+                const slideTop = slide.offsetTop;
+                const slideHeight = slide.offsetHeight;
+                
+                if (scrollTop >= slideTop - slideHeight / 2 && scrollTop < slideTop + slideHeight / 2) {
+                    navDots.forEach(dot => dot.classList.remove('active'));
+                    if (navDots[index]) {
+                        navDots[index].classList.add('active');
+                    }
+                }
+            });
+        }
+
+        // 滚动动画观察器
+        function setupScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationDelay = '0.2s';
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.slide, .feature-card').forEach(element => {
+                observer.observe(element);
+            });
+        }
+
+        // 平滑滚动
+        function setupSmoothScrolling() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        }
+
+        // 键盘导航
+        function setupKeyboardNavigation() {
+            const slides = document.querySelectorAll('.slide');
+            let currentSlide = 0;
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+                    e.preventDefault();
+                    currentSlide = Math.min(currentSlide + 1, slides.length - 1);
+                    slides[currentSlide].scrollIntoView({ behavior: 'smooth' });
+                } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                    e.preventDefault();
+                    currentSlide = Math.max(currentSlide - 1, 0);
+                    slides[currentSlide].scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+
+        // 图片模态框功能
+        function setupImageModal() {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const closeBtn = document.querySelector('.close-modal');
+            const demoImages = document.querySelectorAll('.demo-image');
+
+            // 为每个演示图片添加点击事件
+            demoImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    modal.style.display = 'block';
+                    modalImage.src = img.src;
+                    modalImage.alt = img.alt;
+                    document.body.style.overflow = 'hidden'; // 防止背景滚动
+                });
+            });
+
+            // 关闭按钮事件
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+
+            // 点击模态框背景关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // ESC键关闭模态框
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            createNavDots();
+            setupScrollAnimations();
+            setupSmoothScrolling();
+            setupKeyboardNavigation();
+            setupImageModal();
+            
+            // 滚动事件监听
+            window.addEventListener('scroll', () => {
+                updateScrollProgress();
+                updateActiveNavDot();
+            });
+            
+            // 初始化第一个导航点为活跃状态
+            const firstNavDot = document.querySelector('.nav-dot');
+            if (firstNavDot) {
+                firstNavDot.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
