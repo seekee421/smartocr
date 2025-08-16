@@ -649,6 +649,46 @@
                 transform: translateX(0);
             }
         }
+
+        /* 防伪水印样式 */
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            font-family: 'Orbitron', monospace;
+            font-size: 24px;
+            font-weight: 400;
+            color: rgba(0, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            user-select: none;
+            pointer-events: none;
+            transform: rotate(-5deg);
+        }
+
+        .watermark:hover {
+            color: rgba(0, 255, 255, 0.5);
+            border-color: rgba(0, 255, 255, 0.4);
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 12px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .watermark {
+                bottom: 15px;
+                right: 15px;
+                font-size: 20px;
+                padding: 12px 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1098,7 +1138,9 @@
                 }
             });
         }
+    </script>
 
+    <script>
         // 图片模态框功能
         function setupImageModal() {
             const modal = document.getElementById('imageModal');
@@ -1161,5 +1203,10 @@
             }
         });
     </script>
+
+    <!-- 防伪水印 -->
+    <div class="watermark">
+        翎带科技邀约方案
+    </div>
 </body>
 </html>
